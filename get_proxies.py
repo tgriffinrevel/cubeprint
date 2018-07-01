@@ -11,9 +11,9 @@ DECK_URL_BASE = 'http://www.netrunnerdb.com/api/2.0/public/deck/'
 
 ALL_CARDS_URL = 'http://netrunnerdb.com/api/2.0/public/cards'
 
-card_sheet = ''
+# card_sheet = ''
 card_base = '<div class="card"><img class="card-img" src="{url}" /></div>\n'
-output = ''
+# output = ''
 
 
 def get_identities():
@@ -26,8 +26,7 @@ def get_identities():
     return identities
 
 
-def add_to_card_sheet(cards):
-    global card_sheet
+def add_to_card_sheet(card_sheet, cards):
     for card in cards:
         x = cards[card]
         # if x > 3:
@@ -37,12 +36,11 @@ def add_to_card_sheet(cards):
                 url=IMAGE_URL_BASE.format(code=card)
             )
             x -= 1
+    return card_sheet
 
 
-def print_page():
-    global card_sheet
-    global output
-    output += '''<html>
+def print_page(card_sheet):
+    output = '''<html>
               <style>
                .card{
                  float: left;
@@ -54,10 +52,11 @@ def print_page():
               <body>'''
     output += card_sheet
     output += '</body></html>'
+    return output
 
 
 def runner(arguments, identity):
-    global output
+    card_sheet = ''
     identities = get_identities()
 
     for deck in arguments:
@@ -71,19 +70,18 @@ def runner(arguments, identity):
         for card in card_codes:
             if card in identities:
                 if identity:
-                    add_to_card_sheet({card: 1})
+                    card_sheet = add_to_card_sheet(card_sheet, {card: 1})
                 cards.pop(card)
 
-        add_to_card_sheet(cards)
+        card_sheet = add_to_card_sheet(card_sheet, cards)
 
-    print_page()
+    return print_page(card_sheet)
     # html_file = open('output.html', 'w')
     #
     # html_file.write(output)
     # html_file.close()
     # pdfkit.from_url('output.html', 'output.pdf')
 
-    return output
 
 
 if __name__ == '__main__':
