@@ -83,7 +83,7 @@ def runner(arguments, identity):
     # html_file.close()
     # pdfkit.from_url('output.html', 'output.pdf')
 
-    print(output)
+    return output
 
 
 if __name__ == '__main__':
